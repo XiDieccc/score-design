@@ -2,19 +2,19 @@
   <el-container>
     <el-header height="50px" class="bg-primary">
       <div class="header">
-        <h1 @click="$router.push('/')">Vue+Element+Express</h1>
+        <h1 @click="$router.push('/')">吉他曲谱爬取搜索与推荐系统</h1>
         <div>
           <template v-if="!$store.state.isUserLogin">
             <span @click="$router.push({name: 'login'})">登录</span>&nbsp;|
             <span @click="$router.push({name: 'register'})">注册</span>
           </template>
-          <el-dropdown @command="handleCommand" v-else>
+          <!-- <el-dropdown @command="handleCommand" v-else>
             <span class="el-dropdown-link text-white"><i class="el-icon-s-tools">设置</i></span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="logout">退出</el-dropdown-item>
               <el-dropdown-item command="movie-create">新增电影</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
+          </el-dropdown> -->
         </div>
       </div>
     </el-header>

@@ -1,5 +1,5 @@
 <template>
-  <base-box type="primary" title="电影">
+  <!-- <base-box type="primary" title="电影">
     <template v-slot:title-addon>
       <div class="filter">
         <label @click="orderBy('rating', $event)">最新</label>
@@ -25,7 +25,10 @@
         <p>{{ movie. name }} <strong>{{ movie.rating }}</strong></p>
       </a>
     </div>
-  </base-box>
+  </base-box> -->
+  <div>
+    曲谱列表页
+  </div>
 </template>
 
 <script>

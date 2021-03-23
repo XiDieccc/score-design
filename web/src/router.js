@@ -7,10 +7,11 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
+    // aaa
     {
       path: '/',
       name: 'home',
-      redirect: { name: 'movie-list' }
+      redirect: { name: 'score-list' }
     },
     {
       path: '/about',
@@ -18,20 +19,42 @@ const router = new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      component: () =>
+        import ( /* webpackChunkName: "about" */ './views/About.vue')
     },
-    { path: '/users/login', alias: '/login', name: 'login', component: () => import('./views/user/login.vue') },
-    { path: '/users/register', alias: '/register', name: 'register', component: () => import('./views/user/register.vue') },
     {
-      path: '/movies',
-      component: () => import('./views/layout/movie'),
+      path: '/users/login',
+      alias: '/login',
+      name: 'login',
+      component: () =>
+        import ('./views/user/login.vue')
+    },
+    {
+      path: '/users/register',
+      alias: '/register',
+      name: 'register',
+      component: () =>
+        import ('./views/user/register.vue')
+    },
+    {
+      // path: '/movies',
+      path: '/scores',
+      component: () =>
+        import ('./views/layout/movie'),
       children: [
-        { path: 'create', name: 'movie-create', alias: 'edit', component: () => import('./views/movie/create'), meta: { auth: true } },
-        { path: 'detail/:id', name: 'movie-detail', component: () => import('./views/movie/detail') },
-        { path: 'list', name: 'movie-list', component: () => import('./views/movie/list') }
+        // { path: 'create', name: 'movie-create', alias: 'edit', component: () =>
+        //     import ('./views/movie/create'), meta: { auth: true } },
+        // { path: 'detail/:id', name: 'movie-detail', component: () =>
+        //     import ('./views/movie/detail') },
+        {
+          path: 'list',
+          name: 'score-list',
+          component: () =>
+            import ('./views/score/list')
+        }
       ]
     },
-    { path: '*', redirect: { name: 'movie-list' } }
+    { path: '*', redirect: { name: 'score-list' } }
   ]
 })
 
