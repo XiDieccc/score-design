@@ -14,8 +14,10 @@
       <el-form-item prop="password" label="密码">
         <el-input v-model="loginForm.password" type="password"></el-input>
       </el-form-item>
-      <el-button type="primary" style="width:100%" native-type="submit" :loading="loading" @click="login">登录</el-button>
-      <div class="login-info">如果没有册账号请<router-link :to="{name: 'register'}">点击注册</router-link></div>
+      <div class="login-button">
+        <el-button type="primary" native-type="submit" :loading="loading" @click="login">登录</el-button>
+      </div>
+      <div class="login-info">如果没有册账号请点击<router-link :to="{name: 'register'}">注册</router-link></div>
     </el-form>
   </div>
 </template>
@@ -30,8 +32,7 @@ export default {
       error: '',
       loginForm: {
         email: '',
-        password: '',
-        comparePassword: ''
+        password: ''
       },
       loginRules: {
         email: { type: 'email', required: true, message: '请输入有效的邮箱地址', trigger: 'blur' },
@@ -91,7 +92,13 @@ export default {
       width: 430px;
       margin: 120px auto 0;
       background: #fff;
-      padding: 20px;
+      padding: 20px 0;
+      padding-right: 30px;
+      border-radius: 15px;
+      .login-button{
+        display: flex;
+        justify-content: center;
+      }
       .login-info {
         text-align: right;
         font-size: 0.9rem;
@@ -100,6 +107,8 @@ export default {
       }
       .login-error {
         color: #F56C6C;
+        text-align: center;
+        padding: 0 0 5px 5px;
       }
     }
   }

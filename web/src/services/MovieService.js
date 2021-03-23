@@ -1,16 +1,16 @@
 import request from './index'
 
 export default {
-  create (data) {
+  create(data) {
     return request.post('/movies', data)
   },
-  update (id, data) {
+  update(id, data) {
     return request.put(`/movies/${id}`, data)
   },
-  getById (id) {
+  getById(id) {
     return request.get(`/movies/${id}`)
   },
-  getAll (query = '') {
+  getAll(query = '') {
     return request.get(`/movies?${query}`)
   }
 }

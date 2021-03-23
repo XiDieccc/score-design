@@ -17,8 +17,10 @@
       <el-form-item prop="comparePassword" label="确认密码">
         <el-input v-model="registerForm.comparePassword" type="password"></el-input>
       </el-form-item>
-      <el-button type="primary" style="width:100%" native-type="submit" :loading="loading" @click.prevent="register">注册</el-button>
-      <div class="register-info">如果已注册账号请<router-link :to="{name: 'login'}">点击登录</router-link></div>
+      <div class="register-button">
+        <el-button type="primary" native-type="submit" :loading="loading" @click.prevent="register">注册</el-button>
+      </div>
+      <div class="register-info">如果已注册账号请点击<router-link :to="{name: 'login'}">登录</router-link></div>
     </el-form>
   </div>
 </template>
@@ -63,6 +65,7 @@ export default {
           this.loading = true
           this.error = ''
           try {
+            // 发送表单请求，用户注册
             const response = await UserService.register(
               {
                 email: this.registerForm.email,
@@ -72,6 +75,7 @@ export default {
             if (response.data.code !== 200) {
               this.error = response.data.error
             } else {
+              // 将用户信息和token保存到 vuex
               this.$store.dispatch('setToken', response.data.token)
               this.$store.dispatch('setUser', response.data.user)
               this.$router.push('/')
@@ -104,7 +108,13 @@ export default {
       width: 430px;
       margin: 120px auto 0;
       background: #fff;
-      padding: 20px;
+      padding: 20px 0;
+      padding-right: 30px;
+      border-radius: 15px;
+      .register-button{
+        display: flex;
+        justify-content: center;
+      }
       .register-info {
         text-align: right;
         font-size: 0.9rem;
@@ -113,6 +123,8 @@ export default {
       }
       .register-error {
         color: #F56C6C;
+        text-align: center;
+        padding: 0 0 5px 5px;
       }
     }
   }
