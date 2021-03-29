@@ -1,18 +1,13 @@
 <template>
-  <base-box type="primary" title="曲谱列表">
+  <base-box type="primary" title="曲谱搜索" :headerBorder= false>
     <template v-slot:title-addon>
-      <div class="filter">
-        <label @click="orderBy('views', $event)">热门</label>
-        <label @click="orderBy('rating', $event)">高分</label>
-        <label @click="filterByGenre('keys')">调号</label>
-        <label @click="filterByGenre('类别：青春校园')">类别</label>
-      </div>
-      <div class="text-success" style="margin-left: auto; cursor: pointer"
-        @click="$router.push({name: 'score-create'})" v-if="$store.state.isUserLogin">
-        <i class="el-icon-plus"></i> 新增曲谱
+      <div class="search-model">
+        <el-input class="search-info" placeholder="请输入搜索内容" v-model="info">
+          <el-button class="search-button" @click="search" slot="append" icon="el-icon-search"></el-button>
+        </el-input>
       </div>
     </template>
-    <div class="score-list">
+    <div class="search-list" v-if="this.result">
       <a
         class="score-item"
         @click="$router.push({name: 'score-detail', params: {id: score.id}})"
@@ -32,6 +27,7 @@ import ScoreService from 'services/ScoreService'
 export default {
   data () {
     return {
+      result: true,
       scores: [
         {
           id: '1',
@@ -63,7 +59,8 @@ export default {
           poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
           keys: 'C'
         }
-      ]
+      ],
+      info: ''
     }
   },
   // async created () {
@@ -75,19 +72,21 @@ export default {
   //   }
   // },
   methods: {
-    async orderBy (field, event) {
-      // console.log(event.target)
-      let query = `orderby=${field}`
-      try {
-        const response = await ScoreService.getAll(query)
-        this.scores = response.data.scores
-      } catch (error) {
-        this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+    async search (genre, event) {
+      // TODO: search
+      if (this.info) {
+        this.result = true
+      } else {
+        this.$message({
+          message: '搜索内容为空，请重新输入',
+          type: 'warning',
+          duration: 1500
+        })
       }
     },
-    async filterByGenre (tags, event) {
+    async filterByGenre (genre, event) {
       // console.log(event.target)
-      let query = `tags=${tags}`
+      let query = `genre=${genre}`
       try {
         const response = await ScoreService.getAll(query)
         this.scores = response.data.scores
@@ -100,19 +99,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.filter {
-  margin-left: 10px;
-  label {
-    margin-right: 10px;
-    color: #9b9b9b;
-    font-size: 13px;
-    cursor: pointer;
-    &.active {
-      color: #000000;
-    }
+.search-model {
+  margin: auto;
+  width: 500px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  .search-info{
+    border-right:none !important;
+  }
+  .search-button{
+    border: none;
+    background-color: white;
   }
 }
-.score-list {
+.search-list {
   .score-item {
     display: block;
     margin: 10px;

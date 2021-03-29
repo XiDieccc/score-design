@@ -1,12 +1,13 @@
-const { Movie, Sequelize } = require('../models')
+const { Score, Sequelize } = require('../models')
 
 module.exports = {
-  async create (req, res) {
+  // 创建曲谱
+  async create(req, res) {
     try {
-      const movie = await Movie.create(req.body)
+      const score = await Score.create(req.body)
       res.status(201).send({
         code: 200,
-        user: movie.toJSON()
+        score: score.toJSON()
       })
     } catch (error) {
       let err = []
@@ -23,11 +24,11 @@ module.exports = {
       })
     }
   },
-  async update (req, res) {
+  // 更新曲谱
+  async update(req, res) {
     try {
-      await Movie.update(
-        req.body,
-        {
+      await Score.update(
+        req.body, {
           where: {
             id: req.params.id
           }
@@ -43,12 +44,14 @@ module.exports = {
       })
     }
   },
-  async getByid (req, res) {
+
+  // 查看曲谱
+  async getByid(req, res) {
     try {
-      const movie = await Movie.findByPk(req.params.id)
-      if (movie) {
+      const score = await Score.findByPk(req.params.id)
+      if (score) {
         res.status(200).send({
-          movie
+          score
         })
       } else {
         res.status(400).send({
@@ -63,14 +66,16 @@ module.exports = {
       })
     }
   },
-  async getAll (req, res) {
+  async getAll(req, res) {
     const Op = Sequelize.Op
     const operators = {}
     let orderBy = 'updatedAt'
     if (req.query.genre) {
       const filter = {
         where: {
-          genre: { [Op.like]: `%${req.query.genre}%` }
+          genre: {
+            [Op.like]: `%${req.query.genre}%`
+          }
         }
       }
       Object.assign(operators, filter)
@@ -78,12 +83,16 @@ module.exports = {
     if (req.query.orderby === 'rating') {
       orderBy = 'rating'
     }
-    Object.assign(operators, { order: [[orderBy, 'DESC']] })
+    Object.assign(operators, {
+      order: [
+        [orderBy, 'DESC']
+      ]
+    })
     try {
-      const movies = await Movie.findAll(operators)
+      const scores = await Score.findAll(operators)
       res.send({
         code: 200,
-        movies: movies
+        scores: scores
       })
     } catch (error) {
       res.status(400).send({
@@ -92,15 +101,15 @@ module.exports = {
       })
     }
   },
-  async delete (req, res) {
+
+  // 删除曲谱
+  async delete(req, res) {
     try {
-      await Movie.destroy(
-        {
-          where: {
-            id: req.params.id
-          }
+      await Score.destroy({
+        where: {
+          id: req.params.id
         }
-      )
+      })
       res.status(200).send({
         message: '数据删除成功'
       })

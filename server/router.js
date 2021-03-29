@@ -1,5 +1,5 @@
 const UserController = require('./controllers/UserController')
-  // const MovieController = require('./controllers/MovieController')
+const ScoreController = require('./controllers/ScoreController')
 const AuthenticatePolicy = require('./policies/AuthenticatePolicy')
 
 module.exports = (app) => {
@@ -21,15 +21,20 @@ module.exports = (app) => {
   // 删除用户
   app.delete('/users/:id', UserController.delete)
 
+  // 新增曲谱
+  app.post('/scores',
+      AuthenticatePolicy.isValidToken,
+      ScoreController.create
+    )
+    // 修改曲谱
+  app.put('/scores/:id',
+      AuthenticatePolicy.isValidToken,
+      ScoreController.update
+    )
+    // 查看曲谱
+  app.get('/scores/:id', ScoreController.getByid)
+  app.get('/scores', ScoreController.getAll)
 
-  // app.post('/movies',
-  //   AuthenticatePolicy.isValidToken,
-  //   MovieController.create
-  // )
-  // app.put('/movies/:id',
-  //   AuthenticatePolicy.isValidToken,
-  //   MovieController.update
-  // )
-  // app.get('/movies/:id', MovieController.getByid)
-  // app.get('/movies', MovieController.getAll)
+  // 删除曲谱
+  app.delete('/scores/:id', ScoreController.delete)
 }

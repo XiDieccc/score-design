@@ -25,13 +25,13 @@ request.interceptors.request.use(config => {
 })
 request.interceptors.response.use(response => {
   NProgress.done()
-  // let loadingInstance = store.state.loadingInstance
-  // loadingInstance.close()
+    // let loadingInstance = store.state.loadingInstance
+    // loadingInstance.close()
   return response
-}, function (error) {
+}, function(error) {
   NProgress.done()
-  // let loadingInstance = store.state.loadingInstance
-  // loadingInstance.close()
+    // let loadingInstance = store.state.loadingInstance
+    // loadingInstance.close()
   return Promise.reject(error)
 })
 

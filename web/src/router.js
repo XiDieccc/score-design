@@ -6,21 +6,10 @@ import { Notification } from 'element-ui'
 Vue.use(Router)
 
 const router = new Router({
-  routes: [
-    // aaa
-    {
+  routes: [{
       path: '/',
       name: 'home',
       redirect: { name: 'score-list' }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import ( /* webpackChunkName: "about" */ './views/About.vue')
     },
     {
       path: '/users/login',
@@ -37,20 +26,41 @@ const router = new Router({
         import ('./views/user/register.vue')
     },
     {
-      // path: '/movies',
       path: '/scores',
       component: () =>
-        import ('./views/layout/movie'),
-      children: [
-        // { path: 'create', name: 'movie-create', alias: 'edit', component: () =>
-        //     import ('./views/movie/create'), meta: { auth: true } },
-        // { path: 'detail/:id', name: 'movie-detail', component: () =>
-        //     import ('./views/movie/detail') },
+        import ('./views/layout/score'),
+      children: [{
+          path: 'create',
+          name: 'score-create',
+          alias: 'edit',
+          component: () =>
+            import ('./views/score/create'),
+          meta: { auth: true }
+        },
+        {
+          path: 'detail/:id',
+          name: 'score-detail',
+          component: () =>
+            import ('./views/score/detail')
+        },
         {
           path: 'list',
           name: 'score-list',
           component: () =>
             import ('./views/score/list')
+        },
+        {
+          path: 'search',
+          name: 'score-search',
+          component: () =>
+            import ('./views/score/search')
+        },
+        {
+          path: 'recommend',
+          name: 'score-recommend',
+          component: () =>
+            import ('./views/score/recommend'),
+          meta: { auth: true }
         }
       ]
     },

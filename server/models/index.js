@@ -24,5 +24,6 @@ fs.readdirSync(__dirname)
 db.Sequelize = Sequelize
 db.sequelize = sequelize
   // db.User = User
+  // db['Score'].sync({ force: true })
 
 module.exports = db
