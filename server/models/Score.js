@@ -20,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     poster: {
       type: DataTypes.STRING
     },
-    // 简介
-    description: {
-      type: DataTypes.TEXT
-    },
     // 标签 用; 分割 分号＋空格
     tags: {
       type: DataTypes.TEXT
@@ -39,8 +35,11 @@ module.exports = (sequelize, DataTypes) => {
     // 谱子图片 url地址 用; 分割 分号＋空格
     spectrum: {
       type: DataTypes.TEXT
+    },
+    // 简介
+    description: {
+      type: DataTypes.TEXT
     }
-
   }, {
     sequelize,
     modelName: 'Score'

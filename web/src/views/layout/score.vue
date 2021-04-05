@@ -2,7 +2,8 @@
   <el-container>
     <el-header height="50px" class="bg-primary" style=" position: sticky; top: 0; z-index: 999;">
       <div class="header">
-        <h1 @click="$router.push('/')">吉他曲谱爬取搜索与推荐系统</h1>
+        <h1 @click="$router.push({ name: 'score-list' })">吉他曲谱爬取搜索与推荐系统</h1>
+        <!-- @click="$router.push({ name: 'score-list' })" -->
         <div>
           <template v-if="!$store.state.isUserLogin">
             <span @click="$router.push({name: 'login'})">登录</span>&nbsp;|

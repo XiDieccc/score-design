@@ -1,8 +1,10 @@
+​																		***吉他曲谱挖掘搜索与推荐系统的设计与实现***
+
 ### 一、起步
 
 #### 1 项目介绍
 
-​	**爬取**一些弹唱吉他谱，将资源进行分类和展示，并实现基于 `关键词搜索` 或 `上下文搜索` 的**智能搜索引擎**，进一步可以实现基于 `协同过滤算法` 的**智能推荐系统**，项目整体采取**B/S架构**，浏览器前端负责吉他谱展示，后端负责吉他谱资源的爬取和 搜索与推荐系统的实现。
+**爬取**一些弹唱吉他谱，将资源进行分类和展示，并实现基于 `关键词搜索` 或 `上下文搜索` 的**智能搜索引擎**，进一步可以实现基于 `协同过滤算法` 的**智能推荐系统**，项目整体采取**B/S架构**，浏览器前端负责吉他谱展示，后端负责吉他谱资源的爬取和 搜索与推荐系统的实现。
 
 
 
@@ -224,23 +226,134 @@
 
 ### 五、用户界面
 
-#### 1 注册界面
+#### 1 注册登录界面
+
+- 前端注册界面，`views/user/register.vue`和`/login.vue`
+
+  ```javascript
+  @click.prevent="register"//这里是在按钮
+  @submit.native.prevent=""//根据标准在整个表单标签
+  ```
+
+- 配置前端路由，以及前端网络请求处理
+
+- `main.js`引入 normalize.css 
 
 
 
-#### 2 登陆页面
+#### 2 使用Vuex完善注册登陆页面
+
+- `vue add vuex ` / `npm i -S vuex`
+
+- vuex.store有 state,mutations,actions三个属性 
+
+- 在登陆或注册成功后，向全局store里添加信息
+
+  ```javascript
+  this.$store.dispatch('setToken', response.data.token)
+  this.$store.dispatch('setUser', response.data.user)
+  ```
+
+- 使用了`vuex-persistedstate`，让vuex数据存储到 `localStorage`，使页面刷新但用户数据不丢失
 
 
 
-#### 3 使用Vuex完善注册登陆页面
+#### 3 axios拦截器
+
+两种方式让登陆注册点击前实现 loading 效果
+
+- nprogress					进度条效果
+- elementUI loading     转圈效果
+
+在 axios request请求前添加判定，headers 里的 **showloading** 是否为true，若是则 `NProgress.start()`启动进度条效果以及按钮不可点击效果，然后删除请求头的showloading属性
+
+在response 响应后 `NProgress.done()`，关闭动画
 
 
 
-#### 4 axios拦截器
+
+
+### 六、信息展示页面
+
+#### 1 全局组件自动加载注册
+
+- 在很多页面上要用到盒子组件，所以全局注册加载盒子组件：
+
+  ```javascript
+  const requireContext = require.context(
+    './global',
+    true,
+    /\.vue$/
+  )
+  
+  // 全局组件注册
+  requireContext.keys().forEach(fileName => {
+    const componentConfig = requireContext(fileName)
+    Vue.component(
+      componentConfig.default.name || componentConfig.name,
+      componentConfig.default || componentConfig
+    )
+  })
+  ```
+
+- 以上是递归注册 `/components/global`文件下的所有组件
 
 
 
+#### 2 信息编辑和查看界面
 
+
+
+#### 3 信息列表界面
+
+
+
+#### 4 详情页面
+
+​	实现了自动滚屏效果
+
+
+
+### 七、前端曲谱信息的增删查改
+
+#### 1 使用 路由导航首位实现前端访问控制
+
+
+
+#### 2 曲谱信息后端接口设计
+
+- ​	`Score`模型
+- ​	`ScoreController.js` 增删查改
+- ​	`router.js` 后端接口
+- ​	Postman接口测试
+
+
+
+#### 3 曲谱信息的新增和编辑
+
+- 完善了前端接口的曲谱信息增删改查请求 `scoreService.js`
+
+- 完成了 新增页面以及编辑页面 的逻辑，新增页面像数据库添加曲谱，编辑界面先根据 query.id 信息查询曲谱信息，最后提交更新PUT请求
+
+  
+
+#### 4 列表页面逻辑
+
+- 像后端请求，查询所有信息
+
+
+
+#### 5 详情页面
+
+- 根据id向后端数据库查询到对应曲谱信息，将部分数据转化格式，同时 只要点击详情页就会发出请求使得浏览量+1
+
+【遇到问题】：
+
+前端更新曲谱浏览量发出put请求，需要验证token，这就使用户没有登陆时不能查看曲谱详情，所以改变策略，在后端 `getById`接口查看曲谱时候，直接在后端向数据库更新浏览量。
+
+
+
+#### 6 搜索页面逻辑
 
 
 
@@ -258,4 +371,24 @@
   注意是 `vue.config.js `文件
 
 - eslint 报错，应该是版本问题，没有解决，重新创建项目，这次使用git推送 保存分支。
+
+- 当在当前页但是又 router.push() 到该页面，就会产生NavigationDuplicated错误
+
+  原因和解决方法：https://blog.csdn.net/qq_34295211/article/details/102371714
+
+- 导航页进行高分和热门排序时，是直接使用的字段字符串排序，无法将数据准确排序，更改：
+
+  ```javascript
+  Object.assign(operators, {
+        order: [
+          // [orderBy, 'DESC']
+          // 此处将 String字段转化为Float字段进行排序
+          [sequelize.cast(sequelize.col(orderBy), 'FLOAT'), 'DESC']
+        ]
+      })
+  ```
+
+  
+
+
 

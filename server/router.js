@@ -23,15 +23,17 @@ module.exports = (app) => {
 
   // 新增曲谱
   app.post('/scores',
-      AuthenticatePolicy.isValidToken,
-      ScoreController.create
-    )
-    // 修改曲谱
+    AuthenticatePolicy.isValidToken,
+    ScoreController.create
+  )
+
+  // 修改曲谱
   app.put('/scores/:id',
-      AuthenticatePolicy.isValidToken,
-      ScoreController.update
-    )
-    // 查看曲谱
+    AuthenticatePolicy.isValidToken,
+    ScoreController.update
+  )
+
+  // 查看曲谱
   app.get('/scores/:id', ScoreController.getByid)
   app.get('/scores', ScoreController.getAll)
 

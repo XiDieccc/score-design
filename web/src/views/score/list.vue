@@ -4,8 +4,8 @@
       <div class="filter">
         <label @click="orderBy('views', $event)">热门</label>
         <label @click="orderBy('rating', $event)">高分</label>
-        <label @click="filterByGenre('keys')">调号</label>
-        <label @click="filterByGenre('类别：青春校园')">类别</label>
+        <label @click="filterByKeys('C')">C调</label>
+        <label @click="filterByKeys('G')">G调</label>
       </div>
       <div class="text-success" style="margin-left: auto; cursor: pointer"
         @click="$router.push({name: 'score-create'})" v-if="$store.state.isUserLogin">
@@ -33,47 +33,47 @@ export default {
   data () {
     return {
       scores: [
-        {
-          id: '1',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        },
-        {
-          id: '2',
-          name: '一千个伤心的理由',
-          poster: 'http://www.jitaba.cn/upimg/allimg/2103/1-2103220U511T6.jpg',
-          keys: 'G'
-        },
-        {
-          id: '3',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        },
-        {
-          id: '4',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        },
-        {
-          id: '5',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        }
+        // {
+        //   id: '1',
+        //   name: '像我这样的人',
+        //   poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
+        //   keys: 'C'
+        // },
+        // {
+        //   id: '2',
+        //   name: '一千个伤心的理由',
+        //   poster: 'http://www.jitaba.cn/upimg/allimg/2103/1-2103220U511T6.jpg',
+        //   keys: 'G'
+        // },
+        // {
+        //   id: '3',
+        //   name: '像我这样的人',
+        //   poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
+        //   keys: 'C'
+        // },
+        // {
+        //   id: '4',
+        //   name: '像我这样的人',
+        //   poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
+        //   keys: 'C'
+        // },
+        // {
+        //   id: '5',
+        //   name: '像我这样的人',
+        //   poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
+        //   keys: 'C'
+        // }
       ]
     }
   },
-  // async created () {
-  //   try {
-  //     const response = await ScoreService.getAll()
-  //     this.scores = response.data.scores
-  //   } catch (error) {
-  //     this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
-  //   }
-  // },
+  async created () {
+    try {
+      const response = await ScoreService.getAll()
+      this.scores = response.data.scores
+    } catch (error) {
+      this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+    }
+  },
   methods: {
     async orderBy (field, event) {
       // console.log(event.target)
@@ -85,9 +85,9 @@ export default {
         this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
       }
     },
-    async filterByGenre (tags, event) {
+    async filterByKeys (keys, event) {
       // console.log(event.target)
-      let query = `tags=${tags}`
+      let query = `keys=${keys}`
       try {
         const response = await ScoreService.getAll(query)
         this.scores = response.data.scores

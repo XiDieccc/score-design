@@ -1,4 +1,4 @@
-const { Score, Sequelize } = require('../models')
+const { Score, Sequelize, sequelize } = require('../models')
 
 module.exports = {
   // 创建曲谱
@@ -50,9 +50,24 @@ module.exports = {
     try {
       const score = await Score.findByPk(req.params.id)
       if (score) {
-        res.status(200).send({
-          score
-        })
+        // 每次查看详情页前，将曲谱浏览量更新
+        let currentViews = score.views.valueOf()
+        currentViews++
+        try {
+          await Score.update({ views: currentViews.toString() }, {
+            where: {
+              id: score.id
+            }
+          })
+          res.status(200).send({
+            score
+          })
+        } catch (error) {
+          res.status(500).send({
+            code: 500,
+            error: '浏览量更新失败'
+          })
+        }
       } else {
         res.status(400).send({
           code: 400,
@@ -70,22 +85,32 @@ module.exports = {
     const Op = Sequelize.Op
     const operators = {}
     let orderBy = 'updatedAt'
-    if (req.query.genre) {
+
+    // 调号
+    if (req.query.keys) {
       const filter = {
         where: {
-          genre: {
-            [Op.like]: `%${req.query.genre}%`
+          keys: {
+            [Op.like]: `%${req.query.keys}%`
           }
         }
       }
       Object.assign(operators, filter)
     }
+    // 评分
     if (req.query.orderby === 'rating') {
       orderBy = 'rating'
     }
+    // 浏览量
+    if (req.query.orderby === 'views') {
+      orderBy = 'views'
+    }
+    // 降序 sequelize.cast(sequelize.col('code'), 'SIGNED'),
     Object.assign(operators, {
       order: [
-        [orderBy, 'DESC']
+        // [orderBy, 'DESC']
+        // 此处将 String字段转化为Float字段进行排序
+        [sequelize.cast(sequelize.col(orderBy), 'FLOAT'), 'DESC']
       ]
     })
     try {

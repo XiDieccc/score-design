@@ -9,8 +9,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="曲谱类别" prop="genre">
-              <el-input v-model="form.genre" placeholder="请输入曲谱类别"></el-input>
+            <el-form-item label="曲谱调号" prop="keys">
+              <el-input v-model="form.keys" placeholder="请输入曲谱调号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -19,18 +19,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="曲谱调号" prop="keys">
-              <el-input v-model="form.key" placeholder="请输入曲谱调号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="曲谱海报" prop="poster">
               <el-input v-model="form.poster" placeholder="请输入曲谱海报地址"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="曲谱标签" prop="tags">
+              <el-input v-model="form.tags" placeholder="请输入曲谱标签"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="曲谱评分" prop="rating">
               <el-input v-model="form.rating" placeholder="请输入曲谱评分，默认为3"></el-input>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="曲谱浏览量" prop="views">
+              <el-input v-model="form.views" placeholder="请输入曲谱浏览量"></el-input>
+            </el-form-item>
+          </el-col>
+           <el-col :span="24">
+            <el-form-item label="曲谱图片" prop="spectrum">
+              <el-input v-model="form.spectrum" placeholder="请输入曲谱图片" type="textarea" :rows="3"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -58,24 +68,29 @@ export default {
       isEdit: false,
       form: {
         name: '',
-        genre: '',
-        singer: '',
         keys: '',
+        singer: '',
         poster: '',
+        tags: '',
         rating: '',
+        views: '',
+        spectrum: '',
         description: ''
       },
       rules: {
         name: { required: true, message: '请输入歌曲名称', trigger: 'blur' },
-        genre: { required: true, message: '请输入曲谱类别', trigger: 'blur' },
-        singer: { required: true, message: '请输入歌手名称', trigger: 'blur' },
         keys: { required: true, message: '请输入曲谱调号', trigger: 'blur' },
+        singer: { required: true, message: '请输入歌手名称', trigger: 'blur' },
         poster: { required: true, message: '请输入曲谱海报地址', trigger: 'blur' },
-        rating: { required: true, message: '请输入曲谱评分，初始为3', trigger: 'blur' },
+        tags: { required: true, message: '请输入曲谱标签', trigger: 'blur' },
+        rating: { required: true, message: '请输入曲谱评分', trigger: 'blur' },
+        views: { required: true, message: '请输入曲谱浏览量', trigger: 'blur' },
+        spectrum: { required: true, message: '请输入曲谱图片地址', trigger: 'blur' },
         description: { required: true, message: '请输入曲谱简介', trigger: 'blur' }
       }
     }
   },
+  // 根据id信息判断是否是编辑，即新增界面或编辑界面
   async created () {
     if (this.$route.query.id) {
       this.isEdit = true
