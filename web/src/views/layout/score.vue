@@ -13,6 +13,7 @@
             <span class="el-dropdown-link text-white"><i class="el-icon-menu" style="margin-right: 3px"></i>更多功能</span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="logout">退出</el-dropdown-item>
+              <el-dropdown-item command="crawler">数据爬取</el-dropdown-item>
               <el-dropdown-item command="score-list">曲谱列表</el-dropdown-item>
               <el-dropdown-item command="score-create">新增曲谱</el-dropdown-item>
               <el-dropdown-item command="score-search">曲谱搜索</el-dropdown-item>

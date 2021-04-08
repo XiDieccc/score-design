@@ -1,7 +1,7 @@
 const { Score, Sequelize, sequelize } = require('../models')
 
 module.exports = {
-  // 创建曲谱
+  // 前端创建曲谱
   async create(req, res) {
     try {
       const score = await Score.create(req.body)
@@ -144,5 +144,19 @@ module.exports = {
         error: '数据删除失败'
       })
     }
+  },
+
+  // 爬虫曲谱写入数据库
+  writeToDB(score) {
+    return new Promise(async(resolve) => {
+      try {
+        const result = await Score.create(score)
+        resolve(result.toJSON())
+      } catch (error) {
+        console.log(`数据存储失败：${score.name}`)
+      }
+    })
+
   }
+
 }

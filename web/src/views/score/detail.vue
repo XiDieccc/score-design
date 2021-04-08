@@ -9,7 +9,6 @@
         <i class="el-icon-edit"></i> 编辑曲谱
       </div>
     </template>
-    名称name | 标签tags | 调号keys | 演唱歌手singer | 海报poster | 简介description | 评分rating | 浏览量views（？）| 谱子spectrum
     <div class="score-item" >
       <h2 style="text-align: center">{{ score.name }}</h2>
       <img :src="score.poster" :alt="score.name" class="score-poster">
@@ -110,6 +109,13 @@ export default {
       const response = await ScoreService.getById(id)
       this.score = response.data.score
       this.score.spectrum = this.score.spectrum.split('; ')
+      
+      // TODO:  曲谱数组的校验 jpg png 去除海报
+      if(this.score.spectrum.length >= 2 && this.score.spectrum[0].includes('jpg') && this.score.spectrum[1].includes('png')){
+        this.score.spectrum.shift()
+      }
+      console.log(this.score.spectrum)
+
       this.score.tags = this.score.tags.split('; ')
     } catch (error) {
       this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)

@@ -61,6 +61,13 @@ const router = new Router({
           component: () =>
             import ('./views/score/recommend'),
           meta: { auth: true }
+        },
+        {
+          path: 'crawler',
+          name: 'crawler',
+          component: () =>
+            import ('./views/score/crawler'),
+          meta: { auth: true }
         }
       ]
     },
