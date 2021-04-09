@@ -12,5 +12,9 @@ export default {
   },
   getAll(query = '') {
     return request.get(`/scores?${query}`)
+  },
+  crawlerBegin(data) {
+    return request.post(`/scores/crawler`, data)
   }
+
 }

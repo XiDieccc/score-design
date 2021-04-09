@@ -2,6 +2,7 @@ const UserController = require('./controllers/UserController')
 const ScoreController = require('./controllers/ScoreController')
 const AuthenticatePolicy = require('./policies/AuthenticatePolicy')
 
+
 module.exports = (app) => {
   // 用户注册
   app.post('/users', UserController.register)
@@ -39,4 +40,11 @@ module.exports = (app) => {
 
   // 删除曲谱
   app.delete('/scores/:id', ScoreController.delete)
+
+  // 开始爬虫(返回爬虫数组信息)
+  app.post(`/scores/crawler`,
+    AuthenticatePolicy.isValidToken,
+    ScoreController.crawlerBegin
+  )
+
 }

@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { Score, Sequelize, sequelize } = require('../models')
+const { Score } = require('../models')
 
 /**
  * 具体的信息处理
@@ -107,5 +107,21 @@ exports.jitabaHandle = function($) {
 
     resolve(score)
 
+  })
+}
+
+/**
+ * 爬虫曲谱写入数据库
+ * @param {*} score 
+ * @returns 
+ */
+exports.writeToDB = function(score) {
+  return new Promise(async(resolve) => {
+    try {
+      const result = await Score.create(score)
+      resolve(result.toJSON())
+    } catch (error) {
+      console.log(`数据存储失败：${score.name}`)
+    }
   })
 }

@@ -114,7 +114,7 @@ export default {
       if(this.score.spectrum.length >= 2 && this.score.spectrum[0].includes('jpg') && this.score.spectrum[1].includes('png')){
         this.score.spectrum.shift()
       }
-      console.log(this.score.spectrum)
+      
 
       this.score.tags = this.score.tags.split('; ')
     } catch (error) {

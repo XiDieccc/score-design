@@ -1,4 +1,5 @@
 const { Score, Sequelize, sequelize } = require('../models')
+const { crawler } = require('../crawler')
 
 module.exports = {
   // 前端创建曲谱
@@ -146,17 +147,37 @@ module.exports = {
     }
   },
 
-  // 爬虫曲谱写入数据库
-  writeToDB(score) {
-    return new Promise(async(resolve) => {
-      try {
-        const result = await Score.create(score)
-        resolve(result.toJSON())
-      } catch (error) {
-        console.log(`数据存储失败：${score.name}`)
+  // 爬虫页数接收接口
+  async crawlerBegin(req, res) {
+    try {
+      const pageNumber = Number(req.body.pageNumber)
+      let maxId = await Score.max('id')
+      let maxPage = Math.ceil((maxId / 12) + 1)
+      if (maxPage + pageNumber > 500) {
+        res.status(501).send({
+          code: 501,
+          error: '请求页数超过网站页数'
+        })
+      } else {
+        let start = new Date().getTime()
+        let scoreArr = await crawler(maxPage, pageNumber)
+        let end = new Date().getTime()
+        let time = Number(end - start)
+        await res.status(201).send({
+          code: 200,
+          message: `所有曲谱数量：${maxId}；爬虫开始页数为：${maxPage}；爬取页面数量：${pageNumber}; 爬虫总时间时间为：${time}`,
+          time,
+          maxId,
+          pageNumber,
+          scoreArr: scoreArr
+        })
       }
-    })
-
+    } catch (error) {
+      res.status(400).send({
+        code: 400,
+        error: '爬虫失败'
+      })
+    }
   }
 
 }

@@ -101,7 +101,7 @@ exports.doubanDetail = async(score) => {
   })
 }
 
-exports.doubanDetail({ name: '别打扰他' })
+// exports.doubanDetail({ name: '别打扰他' })
 
 // #mainpic > span > a > img
 // #mainpic > span > a > img
