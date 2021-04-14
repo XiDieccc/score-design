@@ -14,19 +14,20 @@ const getList = function(url) {
     const $ = cheerio.load(html)
 
     const detailUrlArr = []
+
+    // 将具体每页的曲谱地址存入数组
+    await $('body > div.main.newslist > div.listl.list2 > ul > li > h3 > a').each((index, item) => {
+
       // 为方便数据处理，通过 标题名 过滤掉指弹吉他谱，只保留 弹唱吉他谱
-    if (!$('body > div.main.newslist > div.listl.list2 > ul > li:nth-child(1) > h3 > a > b').text().includes('指弹')) {
-      await $('body .main .list2 ul li .viewimg .preview').each((index, item) => {
-        // 详情页地址的信息
-        // await getDetail($(item).attr('href'))
+      if (!$(item).text().includes('指弹')) {
+        detailUrlArr.push($(item).attr('href'))
+
         // poster 地址
         // let e = cheerio.load([].concat(item))
         // console.log(e('img').attr('src'))
+      }
+    })
 
-        //改进版 同步操作 先存放数组
-        detailUrlArr.push($(item).attr('href'))
-      })
-    }
     // 单页存储曲谱的集合数组
     let scoreArray = []
     await detailUrlArr.reduce((rs, detailUrl) => {
@@ -56,22 +57,15 @@ const getList = function(url) {
  */
 const getDetail = function(detailUrl) {
   return new Promise(async(resolve) => {
-    // const html = await requestPromise(detailUrl)
-    // const $ = cheerio.load(html)
-    // let scoreMid = await jitabaHandle($)
-    // let score = await doubanDetail(scoreMid)
+    const html = await requestPromise(detailUrl)
+    const $ = cheerio.load(html)
+    let scoreMid = await jitabaHandle($)
+    let score = await doubanDetail(scoreMid)
 
     // // 写入数据库 TODO: 可以转存为数组批量异步存入数据库，详情见Readme
-    // let res = await writeToDB(score)
+    let res = await writeToDB(score)
 
-    // console.log(res)
-
-    let res = { url: detailUrl }
-    let i = 0
-    while (i !== 2000) {
-      await i++
-      await console.log(i)
-    }
+    console.log(res)
 
     resolve(res)
   })

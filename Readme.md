@@ -1,4 +1,36 @@
-																		***吉他曲谱挖掘搜索与推荐系统的设计与实现***
+# 项目启动
+
+- 项目下载到本地
+
+  ```shell
+  git clone https://github.com/XiDieccc/score-design.git
+  ```
+
+- 进入后端开启服务器，后端地址：http://127.0.0.1:3000/api
+
+  ```shell
+  cd server
+  npm install
+  npm run dev
+  ```
+
+- 进入前端，访问前端地址：http://localhost:8080/
+
+  ```shell
+  cd web
+  npm install
+  npm run serve
+  ```
+
+- 数据库初始为空，注册账户后可进行爬虫操作来获取吉他谱
+
+
+
+
+
+# 项目开发记录
+
+
 
 ### 一、起步
 

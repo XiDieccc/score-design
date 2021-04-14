@@ -4,6 +4,10 @@ module.exports = (sequelize, DataTypes) => {
   class Model extends Sequelize.Model {}
 
   Model.init({
+    // 标题
+    title: {
+      type: DataTypes.STRING
+    },
     // 曲谱名称
     name: {
       type: DataTypes.STRING

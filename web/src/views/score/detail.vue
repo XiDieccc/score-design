@@ -13,6 +13,7 @@
       <h2 style="text-align: center">{{ score.name }}</h2>
       <img :src="score.poster" :alt="score.name" class="score-poster">
       <ul class="score-meta">
+        <li><label class="text-info">曲谱标题：</label> {{ score.title }}</li>
         <li><label class="text-info">演唱歌手：</label> {{ score.singer }}</li>
         <li><label class="text-info">演奏指法：</label> {{ score.keys }}</li>
         <li><label class="text-info">浏览量<i class="el-icon-view"></i>：</label>{{ score.views }}</li>
@@ -109,12 +110,11 @@ export default {
       const response = await ScoreService.getById(id)
       this.score = response.data.score
       this.score.spectrum = this.score.spectrum.split('; ')
-      
+  
       // TODO:  曲谱数组的校验 jpg png 去除海报
       if(this.score.spectrum.length >= 2 && this.score.spectrum[0].includes('jpg') && this.score.spectrum[1].includes('png')){
         this.score.spectrum.shift()
       }
-      
 
       this.score.tags = this.score.tags.split('; ')
     } catch (error) {

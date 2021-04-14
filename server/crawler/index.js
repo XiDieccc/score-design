@@ -9,9 +9,9 @@ exports.crawler = function(startPage, pageNumber) {
   return new Promise(async(resolve) => {
     const jitabaHost = 'http://www.jitaba.cn'
 
-    // 存储要爬取的页面url  暂时2页,共605页
+    // 存储要爬取的页面url  共605页
     const urlArr = []
-    for (let i = startPage; i < pageNumber + startPage; i++) {
+    for (let i = startPage; i < startPage + pageNumber; i++) {
       urlArr.push(`${jitabaHost}/pic/list_48_${i}.html`)
     }
 
@@ -29,7 +29,6 @@ exports.crawler = function(startPage, pageNumber) {
       })
     }, Promise.resolve())
 
-    // TODO: 这里可以返回一些数据处理时间
     // BUG (没有resolve会一直停留在这个页面)
     resolve(scoreArray)
   })

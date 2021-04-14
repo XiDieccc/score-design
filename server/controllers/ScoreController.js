@@ -151,7 +151,16 @@ module.exports = {
   async crawlerBegin(req, res) {
     try {
       const pageNumber = Number(req.body.pageNumber)
+
+      // 查看数据库 曲谱数量
       let maxId = await Score.max('id')
+
+      // 数据库为空
+      if (isNaN(maxId)) {
+        maxId = 0
+      }
+
+      // 根据多少条数据，判断从哪一页开始爬取，避免爬取到重复数据
       let maxPage = Math.ceil((maxId / 12) + 1)
       if (maxPage + pageNumber > 500) {
         res.status(501).send({
@@ -165,7 +174,7 @@ module.exports = {
         let time = Number(end - start)
         await res.status(201).send({
           code: 200,
-          message: `所有曲谱数量：${maxId}；爬虫开始页数为：${maxPage}；爬取页面数量：${pageNumber}; 爬虫总时间时间为：${time}`,
+          message: `爬虫前数据库曲谱数量：${maxId}；爬虫开始页数为：${maxPage}；本次爬取曲谱数量：${scoreArr.length}; 爬虫总时间时间为：${time}`,
           time,
           maxId,
           pageNumber,

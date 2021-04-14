@@ -24,6 +24,8 @@ fs.readdirSync(__dirname)
 db.Sequelize = Sequelize
 db.sequelize = sequelize
   // db.User = User
-  // db['Score'].sync({ force: true })
+
+// force: true 重置清空数据库
+// db['Score'].sync({ force: true })
 
 module.exports = db

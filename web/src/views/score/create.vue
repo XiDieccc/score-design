@@ -4,6 +4,11 @@
       <el-form ref="score-form" :model="form" :rules="rules" label-width="120px">
         <el-row>
           <el-col :span="12">
+            <el-form-item label="曲谱标题" prop="title">
+              <el-input v-model="form.title" placeholder="请输入曲谱标题"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="歌曲名称" prop="name">
               <el-input v-model="form.name" placeholder="请输入歌曲名称"></el-input>
             </el-form-item>
@@ -67,6 +72,7 @@ export default {
       loading: false,
       isEdit: false,
       form: {
+        title: '',
         name: '',
         keys: '',
         singer: '',
@@ -78,6 +84,7 @@ export default {
         description: ''
       },
       rules: {
+        title: { required: true, message: '请输入曲谱标题', trigger: 'blur' },
         name: { required: true, message: '请输入歌曲名称', trigger: 'blur' },
         keys: { required: true, message: '请输入曲谱调号', trigger: 'blur' },
         singer: { required: true, message: '请输入歌手名称', trigger: 'blur' },
