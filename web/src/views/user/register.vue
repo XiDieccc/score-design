@@ -69,7 +69,8 @@ export default {
             const response = await UserService.register(
               {
                 email: this.registerForm.email,
-                password: this.registerForm.password
+                password: this.registerForm.password,
+                ratings: ''
               }
             )
             if (response.data.code !== 200) {

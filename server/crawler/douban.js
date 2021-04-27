@@ -52,9 +52,9 @@ exports.doubanDetail = async(score) => {
           // 【评分】没有评分 strong.innerText为空
           let ratingStr = await page.$eval('#interest_sectl > div > div.rating_self.clearfix > strong', strong => strong.innerText)
           if (ratingStr) {
-            score.rating = ratingStr
+            score.rating = Number(ratingStr) / 2
           } else {
-            score.rating = '0'
+            score.rating = 0
           }
           // 【浏览量】
           // 评价人数不足 #interest_sectl > div > div.rating_self.clearfix > div > div.rating_sum > a
@@ -101,7 +101,7 @@ exports.doubanDetail = async(score) => {
   })
 }
 
-// exports.doubanDetail({ name: '别打扰他' })
+// exports.doubanDetail({ name: '无用清净梦' })
 
 // #mainpic > span > a > img
 // #mainpic > span > a > img

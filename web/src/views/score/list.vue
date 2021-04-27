@@ -7,13 +7,17 @@
         <label @click="filterByKeys('C')">C调</label>
         <label @click="filterByKeys('G')">G调</label>
       </div>
-      <div class="text-success" style="margin-left: auto; cursor: pointer"
-        @click="$router.push({name: 'score-create'})" v-if="$store.state.isUserLogin">
+      <div
+        class="text-success"
+        style="margin-left: auto; cursor: pointer"
+        @click="$router.push({ name: 'score-create' })"
+        v-if="$store.state.isUserLogin"
+      >
         <i class="el-icon-plus"></i> 新增曲谱
       </div>
     </template>
     <div class="score-list">
-      <a
+      <!-- <a
         class="score-item"
         @click="$router.push({name: 'score-detail', params: {id: score.id}})"
         v-for="score in scores"
@@ -21,16 +25,32 @@
         <img :src="score.poster" :alt="score.name" />
         <p><strong class="name">{{ score. name }} </strong>
         <strong class="keys">{{ score.keys }}</strong></p>
+      </a> -->
+      <a
+        class="score-item"
+        @click="
+          $router.push({ name: 'score-detail', params: { id: score.id } })
+        "
+        v-for="score in scores"
+        :key="score.id"
+      >
+        <div v-lazy-container="{ selector: 'img' }">
+          <img :data-src="score.poster" :alt="score.name" />
+          <!-- <img :src="score.poster" :alt="score.name" /> -->
+        </div>
+        <p>
+          <strong class="name">{{ score.name }} </strong>
+          <strong class="keys">{{ score.keys }}</strong>
+        </p>
       </a>
     </div>
   </base-box>
-
 </template>
 
 <script>
-import ScoreService from 'services/ScoreService'
+import ScoreService from "services/ScoreService";
 export default {
-  data () {
+  data() {
     return {
       scores: [
         // {
@@ -64,39 +84,43 @@ export default {
         //   keys: 'C'
         // }
       ]
-    }
+    };
   },
-  async created () {
+  async created() {
     try {
-      const response = await ScoreService.getAll()
-      this.scores = response.data.scores
+      const response = await ScoreService.getAll();
+      this.scores = response.data.scores;
     } catch (error) {
-      this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+      this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`);
     }
   },
   methods: {
-    async orderBy (field, event) {
+    async orderBy(field, event) {
       // console.log(event.target)
-      let query = `orderby=${field}`
+      let query = `orderby=${field}`;
       try {
-        const response = await ScoreService.getAll(query)
-        this.scores = response.data.scores
+        const response = await ScoreService.getAll(query);
+        this.scores = response.data.scores;
       } catch (error) {
-        this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+        this.$message.error(
+          `[${error.response.status}]，数据查询异常请稍后再试`
+        );
       }
     },
-    async filterByKeys (keys, event) {
+    async filterByKeys(keys, event) {
       // console.log(event.target)
-      let query = `keys=${keys}`
+      let query = `keys=${keys}`;
       try {
-        const response = await ScoreService.getAll(query)
-        this.scores = response.data.scores
+        const response = await ScoreService.getAll(query);
+        this.scores = response.data.scores;
       } catch (error) {
-        this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+        this.$message.error(
+          `[${error.response.status}]，数据查询异常请稍后再试`
+        );
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -133,7 +157,7 @@ export default {
     }
     p {
       text-align: center;
-      .name{
+      .name {
         font-size: 13px;
       }
       .keys {
@@ -141,5 +165,8 @@ export default {
       }
     }
   }
+}
+img[lazy=loading] { 
+  background-color: #20293a;
 }
 </style>

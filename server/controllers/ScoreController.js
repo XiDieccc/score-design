@@ -161,7 +161,7 @@ module.exports = {
       }
 
       // 根据多少条数据，判断从哪一页开始爬取，避免爬取到重复数据
-      let maxPage = Math.ceil((maxId / 12) + 1)
+      let maxPage = Math.ceil((maxId / 10) + 1)
       if (maxPage + pageNumber > 500) {
         res.status(501).send({
           code: 501,
@@ -187,6 +187,30 @@ module.exports = {
         error: '爬虫失败'
       })
     }
-  }
+  },
+
+  // 返回搜索功能
+  async search(req, res) {
+    try {
+      let queryContent = req.params.content
+      const Op = Sequelize.Op
+      const searchResult = await Score.findAll({
+        where: {
+          title: {
+            [Op.like]: `%${queryContent}%`
+          }
+        }
+      })
+      res.status(200).send({
+        message: '搜索成功',
+        scores: searchResult
+      })
+    } catch (error) {
+      res.status(500).send({
+        code: 500,
+        error: '数据搜索失败'
+      })
+    }
+  },
 
 }

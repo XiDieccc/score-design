@@ -1,3 +1,4 @@
+import { update } from 'lodash'
 import request from './index'
 
 export default {
@@ -19,5 +20,8 @@ export default {
       data
     )
     return response
+  },
+  async updateRating(scoreId, userId, data) {
+    return request.put(`/scores/${scoreId}/${userId}`, data)
   }
 }

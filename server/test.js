@@ -49,6 +49,12 @@
 //   console.log(data)
 // })
 
-let test = '搁浅指弹谱_周杰伦_高度还原_吉他独奏谱'
+let test = '搁浅                    指弹谱_周杰伦,高度还原 吉他独奏谱_'
 let flag = test.includes('指弹')
+let arr = test.split('_')
+arr.pop()
+console.log(arr)
 console.log(flag)
+
+let header = test.replace(/\,|\s/g, '_')
+console.log(header)

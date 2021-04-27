@@ -15,6 +15,12 @@ export default {
   },
   crawlerBegin(data) {
     return request.post(`/scores/crawler`, data)
+  },
+  search(data) {
+    return request.get(`/search/${data}`)
+  },
+  async recommend(userId) {
+    return request.get(`/recommend/${userId}`)
   }
 
 }

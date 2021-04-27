@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const MD5 = require('crypto-js/md5')
 
-function hashPassword (user, options) {
+function hashPassword(user, options) {
   if (user.changed('password')) {
     user.password = MD5(user.password).toString()
   }
@@ -9,7 +9,7 @@ function hashPassword (user, options) {
 
 module.exports = (sequelize, DataTypes) => {
   class Model extends Sequelize.Model {
-    comparePassword (password) {
+    comparePassword(password) {
       return this.password === MD5(password).toString()
     }
   }
@@ -34,15 +34,17 @@ module.exports = (sequelize, DataTypes) => {
           msg: '密码长度必须大于5小于20'
         }
       }
+    },
+    // 新加字段 评分信息格式为 scoreId,rating;
+    ratings: {
+      type: DataTypes.STRING
     }
-  },
-  {
+  }, {
     hooks: {
       afterValidate: hashPassword
     },
     sequelize,
     modelName: 'User'
-  }
-  )
+  })
   return Model
 }

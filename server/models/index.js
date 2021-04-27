@@ -27,5 +27,5 @@ db.sequelize = sequelize
 
 // force: true 重置清空数据库
 // db['Score'].sync({ force: true })
-
+// db['User'].sync({ force: true })
 module.exports = db

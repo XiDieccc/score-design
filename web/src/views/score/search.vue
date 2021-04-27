@@ -3,11 +3,11 @@
     <template v-slot:title-addon>
       <div class="search-model">
         <el-input class="search-info" placeholder="请输入搜索内容" v-model="info">
-          <el-button class="search-button" @click="search" slot="append" icon="el-icon-search"></el-button>
+          <el-button native-type="submit" class="search-button" @click="search(info)" slot="append" icon="el-icon-search"></el-button>
         </el-input>
       </div>
     </template>
-    <div class="search-list" v-if="this.result">
+    <div class="search-list" v-show="this.showResult">
       <a
         class="score-item"
         @click="$router.push({name: 'score-detail', params: {id: score.id}})"
@@ -27,71 +27,23 @@ import ScoreService from 'services/ScoreService'
 export default {
   data () {
     return {
-      result: true,
-      scores: [
-        {
-          id: '1',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        },
-        {
-          id: '2',
-          name: '一千个伤心的理由',
-          poster: 'http://www.jitaba.cn/upimg/allimg/2103/1-2103220U511T6.jpg',
-          keys: 'G'
-        },
-        {
-          id: '3',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        },
-        {
-          id: '4',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        },
-        {
-          id: '5',
-          name: '像我这样的人',
-          poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-          keys: 'C'
-        }
-      ],
+      showResult: false,
+      scores: [],
       info: ''
     }
   },
-  // async created () {
-  //   try {
-  //     const response = await ScoreService.getAll()
-  //     this.scores = response.data.scores
-  //   } catch (error) {
-  //     this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
-  //   }
-  // },
   methods: {
-    async search (genre, event) {
-      // TODO: search
-      if (this.info) {
-        this.result = true
+    async search (info) {
+      if (info) {
+        let res = await ScoreService.search(info)
+        this.scores = res.data.scores
+        this.showResult = true
       } else {
         this.$message({
           message: '搜索内容为空，请重新输入',
           type: 'warning',
           duration: 1500
         })
-      }
-    },
-    async filterByGenre (genre, event) {
-      // console.log(event.target)
-      let query = `genre=${genre}`
-      try {
-        const response = await ScoreService.getAll(query)
-        this.scores = response.data.scores
-      } catch (error) {
-        this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
       }
     }
   }

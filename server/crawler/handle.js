@@ -22,8 +22,9 @@ exports.jitabaHandle = function($) {
     }
 
     let header = $('body > div.main.newslist > div.listl > div > div.listlcon > div.listltitle > h1').text()
-      // 转换下分隔符 有的是 ',' 有的是 '_'
-    header = header.replace(/\,/g, '_')
+
+    // 转换下分隔符 有的是 ',',' ' 有的是 '_'
+    header = header.replace(/\,|\s/g, '_')
 
     //【标题 title】
     score.title = header

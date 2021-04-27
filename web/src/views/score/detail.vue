@@ -1,41 +1,81 @@
 <template>
-  <base-box title="" type="primary" :headerBorder= false>
+  <base-box title="" type="primary" :headerBorder="false">
     <template v-slot:title-addon>
       <div
         class="text-primary"
         style="margin-left: auto; cursor: pointer"
-        @click="$router.push({path: '/scores/edit', query: {id: $route.params.id}})"
-        v-if="$store.state.isUserLogin">
+        @click="
+          $router.push({
+            path: '/scores/edit',
+            query: { id: $route.params.id }
+          })
+        "
+        v-if="$store.state.isUserLogin"
+      >
         <i class="el-icon-edit"></i> 编辑曲谱
       </div>
     </template>
-    <div class="score-item" >
+    <div class="score-item">
       <h2 style="text-align: center">{{ score.name }}</h2>
-      <img :src="score.poster" :alt="score.name" class="score-poster">
+      <img :src="score.poster" :alt="score.name" class="score-poster" />
       <ul class="score-meta">
         <li><label class="text-info">曲谱标题：</label> {{ score.title }}</li>
         <li><label class="text-info">演唱歌手：</label> {{ score.singer }}</li>
         <li><label class="text-info">演奏指法：</label> {{ score.keys }}</li>
-        <li><label class="text-info">浏览量<i class="el-icon-view"></i>：</label>{{ score.views }}</li>
-        <li><label class="text-info">评分：</label>
+        <li>
+          <label class="text-info">浏览量<i class="el-icon-view"></i>：</label
+          >{{ score.views }}
+        </li>
+        <li>
+          <label class="text-info">评分：</label>
           <el-rate
-            :value="score.rating/2"
+            :value="Number(score.rating)"
             disabled
             style="display: inline-block"
           ></el-rate>
           <span style="color: #ff9900">{{ score.rating }}</span>
         </li>
-         <li><label class="text-info">标签：</label>
-          <span v-for="(type, index) in score.tags" :key="index">{{ type }}; </span>
+        <li>
+          <label class="text-info">标签：</label>
+          <span v-for="(type, index) in score.tags" :key="index"
+            >{{ type }};
+          </span>
         </li>
-        <li><label class="text-success">简介: </label><p>{{ score.description }}</p></li>
+        <li>
+          <label class="text-success">简介: </label>
+          <p>{{ score.description }}</p>
+        </li>
       </ul>
+      <div class="rating-model">
+        <div class="rating-info">
+          <p class="text-primary">你的评分</p>
+          <el-button
+            native-type="submit"
+            class="rating-button"
+            @click="updateRating()"
+            >提交评分</el-button
+          >
+        </div>
+        <el-rate :change="setRating(rating)" v-model="rating" show-score>
+        </el-rate>
+      </div>
+
       <div class="spectrum-pic">
-        <img v-for="(pic, index) in score.spectrum" :key="index" :src="pic" :alt="score.name">
+        <img
+          v-for="(pic, index) in score.spectrum"
+          :key="index"
+          :src="pic"
+          :alt="score.name"
+        />
       </div>
       <div class="pic-scroll">
         <el-slider
-          id="scroll-slider" v-model="value" vertical height="200px" @change="autoScroll(value)">
+          id="scroll-slider"
+          v-model="value"
+          vertical
+          height="200px"
+          @change="autoScroll(value)"
+        >
         </el-slider>
       </div>
     </div>
@@ -43,118 +83,154 @@
 </template>
 
 <script>
-import ScoreService from 'services/ScoreService'
+import ScoreService from "services/ScoreService";
+import UserService from "services/UserService";
+import store from "../../store";
 
 export default {
-  name: 'ScoreDetail',
-  data () {
+  name: "ScoreDetail",
+  data() {
     return {
-      score: {
-        // id: '1',
-        // name: '像我这样的人',
-        // keys: 'C',
-        // singer: '毛不易',
-        // poster: 'https://www.jitatang.com/wp-content/uploads/2020/05/2021030307201688.jpg?x-oss-process=image/resize,m_fill,limit_0,h_200,w_300',
-        // tags: [
-        //   '毛不易',
-        //   '才华横溢',
-        //   '非常好听',
-        //   '民谣',
-        //   '明日之子',
-        //   '单曲',
-        //   '难过',
-        //   '华语音乐',
-        //   '毛不易',
-        //   '才华横溢',
-        //   '非常好听',
-        //   '民谣',
-        //   '明日之子',
-        //   '单曲',
-        //   '难过',
-        //   '华语音乐'
-        // ],
-        // rating: 8.2,
-        // views: 10,
-        // description: `《像我这样的人》是首由毛不易作词、作曲并演唱的歌曲
-        // 在毛不易面临大学毕业时，他试图逃离现状，又不知去往何处。2016年，毛不易在杭州地方医院实习时，他开始提笔写歌，他把这样的自己写进了歌曲《像我这样的人》中，这首歌唱出来很多人的真实写照，所以一瞬间火便全网。`,
-        // spectrum: [
-        //   'https://www.jitatang.com/wp-content/uploads/2020/05/2020052608563114.jpg',
-        //   'https://www.jitatang.com/wp-content/uploads/2020/05/202005260857566.jpg'
-        // ]
-      },
-      value: 0
-    }
+      score: {},
+      value: 0,
+      rating: 0
+    };
   },
   methods: {
-    autoScroll (value) {
+    autoScroll(value) {
       // 页面全部高度
-      const allHeight = document.body.scrollHeight
+      const allHeight = document.body.scrollHeight;
       // 当前高度
-      const _currentHeight = document.documentElement.scrollTop
+      const _currentHeight = document.documentElement.scrollTop;
       // 速率
-      const speed = Math.ceil(value / 10)
-      let target = _currentHeight
+      const speed = Math.ceil(value / 10);
+      let target = _currentHeight;
       const animation = setInterval(() => {
-        target += speed
-        window.scrollTo(0, target)
+        target += speed;
+        window.scrollTo(0, target);
         if (target >= allHeight) {
-          clearInterval(animation)
-          window.scrollTo(0, 0)
+          clearInterval(animation);
+          window.scrollTo(0, 0);
         }
-      }, 50)
+      }, 50);
+    },
+
+    setRating(rating) {
+      this.rating = rating;
+    },
+
+    async updateRating() {
+      try {
+        const response = await UserService.updateRating(
+          this.$route.params.id,
+          store.state.user.id,
+          { rating: this.rating }
+        );
+        
+        // 更新本地的user信息
+        this.$store.dispatch("setUser", response.data.user);
+      } catch (error) {
+        this.$message.error(`[${error}]，评分更新异常请稍后再试`);
+      }
     }
   },
-  async created () {
-    let id = this.$route.params.id
+  async created() {
+    // 曲谱的id
+    let id = this.$route.params.id;
+
+    // 查询用户对该曲谱的评分
+    let user = store.state.user;
+
+    if (user && user.ratings) {
+      let ratingsArr = user.ratings.split(";");
+      ratingsArr.pop();
+      for (let i = 0; i < ratingsArr.length; i++) {
+        let temp = ratingsArr[i].split(",");
+        let scoreId = Number(temp[0]);
+        let rating = Number(temp[1]);
+        if (id === scoreId) {
+          this.rating = rating;
+        }
+      }
+      // 若遍历到最后没有评分，依然是0
+    }
+
     try {
-      const response = await ScoreService.getById(id)
-      this.score = response.data.score
-      this.score.spectrum = this.score.spectrum.split('; ')
-  
+      const response = await ScoreService.getById(id);
+      this.score = response.data.score;
+      this.score.spectrum = this.score.spectrum.split("; ");
+
       // TODO:  曲谱数组的校验 jpg png 去除海报
-      if(this.score.spectrum.length >= 2 && this.score.spectrum[0].includes('jpg') && this.score.spectrum[1].includes('png')){
-        this.score.spectrum.shift()
+      if (
+        this.score.spectrum.length >= 2 &&
+        this.score.spectrum[0].includes("jpg") &&
+        this.score.spectrum[1].includes("png")
+      ) {
+        this.score.spectrum.shift();
       }
 
-      this.score.tags = this.score.tags.split('; ')
+      this.score.tags = this.score.tags.split("; ");
     } catch (error) {
-      this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+      this.$message.error(`[${error}]，数据查询异常请稍后再试`);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .score-item {
   padding: 0 10px;
   .score-poster {
-      display: block;
-      height: 200px;
-      width: 360px;
-      border-radius: 3px;
-      float: left;
+    display: block;
+    height: 200px;
+    width: 360px;
+    border-radius: 3px;
+    float: left;
   }
   .score-meta {
     list-style: none;
     margin-left: 340px;
     font-size: 14px;
     li {
-      line-height: 1.4 ;
+      line-height: 1.4;
       label {
         width: 72px;
         display: inline-block;
       }
     }
   }
-  .spectrum-pic{
+  .rating-model {
+    text-align: center;
     margin-top: 30px;
-    img{
+    font-size: 20px;
+    height: 100px;
+    .rating-info {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      .rating-button {
+        height: 40px;
+        font-size: 20px;
+        background-color: #409eff;
+      }
+    }
+    ::v-deep .el-rate__icon {
+      font-size: 30px;
+    }
+    ::v-deep .el-rate__text {
+      font-size: 30px;
+      color: #409eff !important;
+    }
+  }
+  .spectrum-pic {
+    margin-top: 30px;
+    img {
       display: block;
       max-width: 1000px;
       height: auto;
     }
   }
-  .pic-scroll{
+  .pic-scroll {
     position: fixed;
     top: 300px;
     right: 100px;

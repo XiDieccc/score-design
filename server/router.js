@@ -47,4 +47,20 @@ module.exports = (app) => {
     ScoreController.crawlerBegin
   )
 
+  // 用户评分
+  app.put('/scores/:scoreId/:userId',
+    AuthenticatePolicy.isValidToken,
+    UserController.updateRating
+  )
+
+  // 返回用户搜索内容
+  app.get('/search/:content',
+    ScoreController.search
+  )
+
+  // 返回用户推荐内容
+  app.get('/recommend/:userId',
+    AuthenticatePolicy.isValidToken,
+    UserController.recommend
+  )
 }

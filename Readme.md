@@ -414,6 +414,134 @@
 
 
 
+### 九、推荐系统
+
+
+
+ALS 推荐： uer-item-rating 评分
+
+LR排序: user-item-views 浏览次数
+
+
+
+
+
+<img src="E:\毕设\论文\论文图片\推荐系统架构.png" style="zoom:60%;" />
+
+#### 0 协同过滤算法原理：
+
+##### 基于用户的协同过滤算法
+
+实际就是 通过分析用户行为数据，对原始 user-item稀疏矩阵进行 填充
+
+- 计算用户之间的相似度：用过用户向量，计算 **余弦相似度**
+
+$$
+cosine\_sim(u,v) = {r_u . r_v \over |r_u||r_v|}
+$$
+
+- 得到 用户-用户 **余弦相似度矩阵** 
+
+- 推荐物品时：
+
+  - 选取与目标用户最相似的前K个用户
+
+  - 选取目标用户没有进行过评分的物品n
+
+  - 将K个相似用户对n个物品的评分进行加权，认为该评分为目标用户对n个物品的预测评分
+    $$
+    \overline{r_{ui}} = {{\sum sim(u,v)\cdot r_{vi}}\over{\sum sim(u,v)}}
+    $$
+  
+- 对n个物品预测评分进行倒排，优先推荐
+
+
+
+
+
+##### 基于物品的协同过滤算法
+
+计算物品与物品的相似度
+
+
+
+##### 基于模型的协同过滤算法：
+
+- SVD矩阵分解
+- LFM隐含语义
+- ALS交替最小二乘法
+
+###### ALS原理
+
+- 构建 user-item 评分矩阵
+
+- 将 user-item矩阵分解为 两个 矩阵
+
+  - User-Embedding_K 矩阵
+  - Embedding_K-Item 矩阵
+
+  两个矩阵相乘（点积） 得到 User-Item矩阵， Embedding_K 为自定义系数
+
+- 将User-Item稀疏矩阵中蓝色的值作为训练集，User-Embedding_K，Embedding_K-Item矩阵为稠密矩阵
+
+- 稠密矩阵中所有的值都在机器学习任务中当作参数，需要通过机器学习训练得出
+
+- **损失函数** 由User-Embedding_K，Embedding_K-Item矩阵的 点积 和训练集的值求 **RMSE** (均方根误差 Root Mean Squared Error)得出
+
+- **优化方法** 使用 ALS交替最小二乘法进行 损失函数优化
+
+- 最终得到User-Embedding_K，Embedding_K-Item矩阵，就可求得稠密的User-Item矩阵
+
+  
+
+
+
+
+
+#### 1 新建模型： 
+
+- 用户收藏曲谱 User_Score_Collection： user_id,  score_id
+
+- 曲谱标签模型 Tags：name（所有标签都会载入）
+
+- 用户评分 User_Score_Ratings：user_id,  score_id,  ratings
+
+- 用户选择标签 User_Tags：user_id,  tags ,  ratings（这个根据用户评分来添加tags）// score: real 字段还没搞清楚
+
+
+
+
+#### 2 冷启动
+
+- 全局热播召回（浏览量/评分） +  用户分群召回（在数据库中将用户分群，选取每个群体中的热门歌曲 / **可否直接爬取流派，根据流派将曲谱分类，然后推荐每类中 浏览量**）
+- 随机选取
+
+
+
+#### 3 推荐：
+
+- 用户分群召回(在数据库中将用户分群) + ALS 召回（**基于ALS的模型推荐**）
+
+
+
+#### 3 基于用户推荐
+
+流程：
+
+<img src="E:\毕设\论文\论文图片\基于用户的系统过滤推荐.png" style="zoom:80%;" />
+
+#### 4 基于物品推荐
+
+
+
+#### 5 排序阶段
+
+##### LR逻辑回归算法
+
+​	常用于二分类问题：非0即1 垃圾邮件分类等
+
+
+
 ### PS、遇到的问题
 
 - sequelize版本过高，不支持import导入操作，换成低版本
@@ -458,3 +586,9 @@
 
 
 
+
+
+TODO：
+
+1. 列表页添加评分与接口
+2. 用户推荐页

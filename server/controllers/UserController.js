@@ -1,6 +1,7 @@
-const { User } = require('../models')
+const { Score, User, Sequelize } = require('../models')
 const config = require('../config')
 const Jwt = require('jsonwebtoken')
+const { recommendIndex } = require('../recommend/index')
 
 function tokenSign({ id, email }) {
   try {
@@ -50,10 +51,7 @@ module.exports = {
       if (isValidPassword) {
         res.send({
           code: 200,
-          user: {
-            email: user.email,
-            id: user.id
-          },
+          user,
           token: tokenSign(user)
         })
       } else {
@@ -130,6 +128,69 @@ module.exports = {
         error: '数据删除失败'
       })
     }
+  },
+
+  // 用户评分
+  async updateRating(req, res) {
+    try {
+      const user = await User.findByPk(req.params.userId)
+
+      // 若有相同的曲谱评分会向后叠加，但不影响计算评分矩阵，因为后面的评分会覆盖
+      await User.update({ ratings: `${user.ratings}${req.params.scoreId},${req.body.rating};` }, {
+        where: {
+          id: req.params.userId
+        }
+      })
+      const newUser = await User.findByPk(req.params.userId)
+      res.status(200).send({
+        message: '评分数据更新成功',
+        user: newUser
+      })
+    } catch (error) {
+      res.status(500).send({
+        code: 500,
+        error: '评分数据更新失败'
+      })
+    }
+
+  },
+
+  // 返回用户推荐内容
+  async recommend(req, res) {
+    try {
+      const user = await User.findByPk(req.params.userId)
+      const recommendArr = await recommendIndex(user)
+
+      let recommendScoreId = []
+      for (let i = 0; i < recommendArr.length; i++) {
+        recommendScoreId.push(recommendArr[i].id)
+      }
+
+      const Op = Sequelize.Op
+      const recommendList = await Score.findAll({
+        where: {
+          id: {
+            [Op.or]: recommendScoreId
+          }
+        }
+      })
+
+      res.status(200).send({
+        message: '推荐数据返回成功',
+
+        // 推荐曲谱
+        scores: recommendList,
+
+        // 推荐指数
+        recommendStarArr: recommendArr
+      })
+    } catch (error) {
+      res.status(500).send({
+        code: 500,
+        error: '推荐失败'
+      })
+    }
+
   }
 
 }
