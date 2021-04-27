@@ -1,75 +1,106 @@
 <template>
   <base-box type="primary" title="曲谱推荐" :headerBorder="false">
-    <template v-slot:title-addon>
-
-    </template>
-    <div class="search-list" v-if="this.result">
-      <a
-        class="score-item"
-        @click="
-          $router.push({ name: 'score-detail', params: { id: score.id } })
-        "
-        v-for="score in scores"
-        :key="score.id"
-      >
-        <img :src="score.poster" :alt="score.name" />
-        <p>
-          <strong class="name">{{ score.name }} </strong>
-          <strong class="keys">{{ score.keys }} </strong>
-          <strong class="recommendStar">{{ score.recommendStar }}</strong>
-        </p>
-      </a>
+    <template v-slot:title-addon> </template>
+    <div class="recommend-list" v-if="this.result">
+      <p class="cf-info">基于用户的协同过滤算法推荐结果：</p>
+      <div class="user-cf">
+        <a
+          class="score-item"
+          @click="
+            $router.push({ name: 'score-detail', params: { id: score.id } })
+          "
+          v-for="score in userCFScores"
+          :key="score.id"
+        >
+          <img :src="score.poster" :alt="score.name" />
+          <p>
+            <strong class="name">{{ score.name }} </strong>
+            <strong class="keys">{{ score.keys }} </strong>
+          </p>
+          <p>
+            <strong class="recommendStar">{{ score.recommendStar }}</strong>
+          </p>
+        </a>
+      </div>
+      <p class="cf-info separator">基于项目的协同过滤算法推荐结果：</p>
+      <div class="item-cf">
+        <a
+          class="score-item"
+          @click="
+            $router.push({ name: 'score-detail', params: { id: score.id } })
+          "
+          v-for="score in itemCFScores"
+          :key="score.id"
+        >
+          <img :src="score.poster" :alt="score.name" />
+          <p>
+            <strong class="name">{{ score.name }} </strong>
+            <strong class="keys">{{ score.keys }} </strong>
+          </p>
+          <p>
+            <strong class="recommendStar">{{ score.recommendStar }}</strong>
+          </p>
+        </a>
+      </div>
     </div>
   </base-box>
 </template>
 
 <script>
 import ScoreService from "services/ScoreService";
-import store from '../../store'
+import store from "../../store";
 export default {
   data() {
     return {
       result: true,
-      scores: []
+      userCFScores: [],
+      itemCFScores: []
     };
   },
   async created() {
     try {
       // store.state.user
-      const response = await ScoreService.recommend(store.state.user.id)
-      this.scores = response.data.scores
+      const response = await ScoreService.recommend(store.state.user.id);
+      this.userCFScores = response.data.UserCF.scores;
+      this.itemCFScores = response.data.ItemCF.scores;
       // 添加评分信息
-      let ratingInfo = response.data.recommendStarArr
-      for (let i = 0; i < this.scores.length; i++) {
-        for (let j = 0; j < ratingInfo.length; j++) {
-          if (this.scores[i].id === ratingInfo[j].id) {
-            this.scores[i].recommendStar = ratingInfo[j].num
+      let ratingInfoUserCF = response.data.UserCF.recommendStarArr;
+      let ratingInfoItemCF = response.data.ItemCF.recommendStarArr;
+      for (let i = 0; i < this.userCFScores.length; i++) {
+        for (let j = 0; j < ratingInfoUserCF.length; j++) {
+          if (this.userCFScores[i].id === ratingInfoUserCF[j].id) {
+            this.userCFScores[i].recommendStar = ratingInfoUserCF[j].num;
+          }
+          if (this.itemCFScores[i].id === ratingInfoItemCF[j].id) {
+            this.itemCFScores[i].recommendStar = ratingInfoItemCF[j].num;
           }
         }
       }
     } catch (error) {
-      this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`)
+      this.$message.error(`[${error.response.status}]，数据查询异常请稍后再试`);
     }
   }
-
 };
 </script>
 
 <style lang="scss" scoped>
-.search-model {
-  margin: auto;
-  width: 500px;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  .search-info {
-    border-right: none !important;
+.recommend-list {
+  .separator{
+    padding-top: 25px;
   }
-  .search-button {
-    border: none;
-    background-color: white;
+  .cf-info {
+    font-size: 30px;
+    color: #409eff;
+    clear: both;
   }
-}
-.search-list {
+  // .user-cf{
+  //   display: flex;
+  //   justify-content: space-between;
+  // }
+  // .item-cf{
+  //   display: flex;
+  //   justify-content: space-between;
+  // }
   .score-item {
     display: block;
     margin: 10px;
@@ -96,8 +127,8 @@ export default {
       .keys {
         color: #e09015;
       }
-      .recommendStar{
-        color: #67C23A;
+      .recommendStar {
+        color: #67c23a;
       }
     }
   }

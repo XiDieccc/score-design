@@ -72,9 +72,23 @@ module.exports = {
   async getUserById(req, res) {
     try {
       const user = await User.findByPk(req.params.id)
+      const scoreList = []
+      let ratingsArr = user.ratings.split(';')
+      for (let i = 0; i < ratingsArr.length - 1; i++) {
+        let temp = ratingsArr[i].split(',')
+        let scoreId = Number(temp[0])
+        let rating = Number(temp[1])
+        let score = await Score.findByPk(scoreId)
+
+        // score['star'] = rating
+        // Object.defineProperty(score, 'star', rating)
+        let res = { star: rating, score: score }
+        scoreList.push(res)
+      }
       if (user) {
         res.status(200).send({
-          user
+          user,
+          scoreList
         })
       } else {
         res.status(400).send({
@@ -161,28 +175,53 @@ module.exports = {
       const user = await User.findByPk(req.params.userId)
       const recommendArr = await recommendIndex(user)
 
-      let recommendScoreId = []
-      for (let i = 0; i < recommendArr.length; i++) {
-        recommendScoreId.push(recommendArr[i].id)
-      }
+      // UserCF 返回推荐集
+      const recommendArrUserCF = recommendArr.resUserCF
 
-      const Op = Sequelize.Op
-      const recommendList = await Score.findAll({
+      // ItemCF 返回推荐集
+      const recommendArrItemCF = recommendArr.resItemCF
+
+      let recommendScoreIdUserCF = []
+      for (let i = 0; i < recommendArrUserCF.length; i++) {
+        recommendScoreIdUserCF.push(recommendArrUserCF[i].id)
+      }
+      const OpUserCF = Sequelize.Op
+      const recommendListUserCF = await Score.findAll({
         where: {
           id: {
-            [Op.or]: recommendScoreId
+            [OpUserCF.or]: recommendScoreIdUserCF
+          }
+        }
+      })
+
+      let recommendScoreIdItemCF = []
+      for (let i = 0; i < recommendArrItemCF.length; i++) {
+        recommendScoreIdItemCF.push(recommendArrItemCF[i].id)
+      }
+      const OpItemCF = Sequelize.Op
+      const recommendListItemCF = await Score.findAll({
+        where: {
+          id: {
+            [OpItemCF.or]: recommendScoreIdItemCF
           }
         }
       })
 
       res.status(200).send({
         message: '推荐数据返回成功',
+        UserCF: {
+          // 推荐曲谱
+          scores: recommendListUserCF,
+          // 推荐指数
+          recommendStarArr: recommendArrUserCF
+        },
+        ItemCF: {
+          // 推荐曲谱
+          scores: recommendListItemCF,
+          // 推荐指数
+          recommendStarArr: recommendArrItemCF
+        }
 
-        // 推荐曲谱
-        scores: recommendList,
-
-        // 推荐指数
-        recommendStarArr: recommendArr
       })
     } catch (error) {
       res.status(500).send({

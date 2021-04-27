@@ -49,12 +49,20 @@
 //   console.log(data)
 // })
 
-let test = '搁浅                    指弹谱_周杰伦,高度还原 吉他独奏谱_'
-let flag = test.includes('指弹')
-let arr = test.split('_')
-arr.pop()
-console.log(arr)
-console.log(flag)
+// let test = '搁浅                    指弹谱_周杰伦,高度还原 吉他独奏谱_'
+// let flag = test.includes('指弹')
+// let arr = test.split('_')
+// arr.pop()
+// console.log(arr)
+// console.log(flag)
 
-let header = test.replace(/\,|\s/g, '_')
-console.log(header)
+// let header = test.replace(/\,|\s/g, '_')
+// console.log(header)
+
+let arr = [0, 1, 2]
+
+let arr1 = arr.slice()
+
+arr[0] = 3
+console.log(arr)
+console.log(arr1)

@@ -1,4 +1,7 @@
 const handle = require('./handle')
+const UserCF = require('./User-Based')
+const ItemCF = require('./Item-Based')
+  // const { User } = require('../models')
 
 /**
  * 
@@ -24,12 +27,25 @@ exports.recommendIndex = (user) => {
     for (let i = 0; i < usersMax; i++) {
       userScoreRatingMatrix[i] = new Array(scoresMax).fill(0) // 列 forEach用法报错，慎用啊
     }
+
+    // 创建 socre-user评分倒置矩阵
+    let scoreUserRatingMatrix = new Array(scoresMax) // 行
+    for (let i = 0; i < scoresMax; i++) {
+      scoreUserRatingMatrix[i] = new Array(usersMax).fill(0) // 列
+    }
+
     for (let i = 0; i < ratingsArr.length; i++) {
       let { userId, rating, scoreId } = ratingsArr[i]
+
+      // user-score评分矩阵
       userScoreRatingMatrix[Number(userId) - 1][Number(scoreId) - 1] = rating
+
+      // score-user评分矩阵
+      scoreUserRatingMatrix[Number(scoreId) - 1][Number(userId) - 1] = rating
     }
 
     // 计算当前用户评分矩阵
+    // 为什么不在 user-score评分矩阵章直接 userScoreRatingMatrix[用户id] 来得到，是因为在系统初期用户太少，当前用户以及其评分信息没有计入该矩阵中,但计入了数据库中，在系统后期会将评分信息写入csv评分文件
     let currentUser = new Array(scoresMax).fill(0)
 
     // 这样分割最后一个为空，所以遍历时最大值-1
@@ -47,8 +63,16 @@ exports.recommendIndex = (user) => {
     // // 根据相似度矩阵推荐曲谱和相似度矩阵来计算推荐曲谱
     // let res = recommend(currentUser, similarity, userScoreRatingMatrix)
 
-    let res = handle.recommend(currentUser, userScoreRatingMatrix)
+    let resUserCF = UserCF.recommendUser(currentUser, userScoreRatingMatrix)
+    let resItemCF = ItemCF.recommendItem(currentUser, scoreUserRatingMatrix)
+    let res = { resUserCF, resItemCF }
     resolve(res)
 
   })
 }
+
+// (async() => {
+//   const user = await User.findByPk(1)
+//   let res = await exports.recommendIndex(user)
+//   console.log(res)
+// })()
