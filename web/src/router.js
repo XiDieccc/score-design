@@ -63,6 +63,13 @@ const router = new Router({
           meta: { auth: true }
         },
         {
+          path: 'user/:id',
+          name: 'user-info',
+          component: () =>
+            import ('./views/user/info'),
+          meta: { auth: true }
+        },
+        {
           path: 'crawler',
           name: 'crawler',
           component: () =>

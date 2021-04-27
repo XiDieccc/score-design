@@ -18,6 +18,7 @@
               <el-dropdown-item command="score-create">新增曲谱</el-dropdown-item>
               <el-dropdown-item command="score-search">曲谱搜索</el-dropdown-item>
               <el-dropdown-item command="score-recommend">曲谱推荐</el-dropdown-item>
+              <el-dropdown-item command="user-info">我的信息</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>

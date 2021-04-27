@@ -12,7 +12,7 @@ module.exports = (app) => {
 
   // 用户查询
   app.get('/users/:id',
-    // AuthenticatePolicy.isValidToken,
+    AuthenticatePolicy.isValidToken,
     UserController.getUserById
   )
 
