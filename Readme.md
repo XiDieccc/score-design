@@ -12,13 +12,13 @@
 
 后端整体基于`Node.js`框架，利用`express`框架搭建服务器，提供Restful风格的接口，数据库采用`SQLite3`并有csv格式文件用于保存推荐模块相关的数据，ORM对象关系映射层为`Sequelize`框架，网络爬虫功能采用基于JavaScript的静态爬虫库`cheerio`以及动态爬虫库`puppeteer`。
 
-<img src="E:\projects\web projects\score-design\doc\img\Snipaste_2021-06-24_14-21-38.jpg" style="zoom: 80%;" />
+<img src=".\doc\img\Snipaste_2021-06-24_14-21-38.jpg" style="zoom: 80%;" />
 
 
 
 ## 1.2 系统功能
 
-<img src="E:\projects\web projects\score-design\doc\img\Snipaste_2021-06-24_14-26-10.jpg" style="zoom:80%;" />
+<img src=".\doc\img\Snipaste_2021-06-24_14-26-10.jpg" style="zoom:80%;" />
 
 
 
@@ -28,7 +28,7 @@
 
 在系统初期，用户较少，评分信息也较少，所以通过爬取豆瓣网站相应的用户评分来构建可靠的评分数据集。随着用户增多，用户评分信息就更有价值，推荐结果就会更准确。
 
-<img src="E:\projects\web projects\score-design\doc\img\Snipaste_2021-06-24_14-34-42.jpg" style="zoom:80%;" />
+<img src=".\doc\img\Snipaste_2021-06-24_14-34-42.jpg" style="zoom:80%;" />
 
 
 
@@ -38,7 +38,7 @@
 
 但这些网站的曲谱信息并未作系统的分类处理，所以看上去十分纷杂。且单个曲谱的信息没有规则化，比如有的曲谱有海报，有些没有；有些曲谱有简介，有些却没有。同时，这些网站并没有曲谱的评分信息、标签分类等，但每个曲谱有对应的歌曲信息，豆瓣网站提供了歌曲的评分、分类、标签等信息，以及还有用户对歌曲的评分情况。
 
-<img src="E:\projects\web projects\score-design\doc\img\Snipaste_2021-06-24_14-37-13.jpg" style="zoom:80%;" />
+<img src=".\doc\img\Snipaste_2021-06-24_14-37-13.jpg" style="zoom:80%;" />
 
 ### 1.2.3 用户评分模块
 
@@ -50,7 +50,9 @@
 
 用户评分时序图如图：
 
-<img src="E:\projects\web projects\score-design\doc\img\Snipaste_2021-06-24_14-39-14.jpg" style="zoom:80%;" />
+
+
+<img src=".\doc\img\Snipaste_2021-06-24_14-39-14.jpg" style="zoom:80%;" />
 
 
 
